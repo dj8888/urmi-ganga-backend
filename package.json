@@ -7,11 +7,20 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@clerk/backend": "^1.29.2",
+    "cashfree-pg": "^5.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
-    "nodemon": "^3.1.9"
+    "jsonwebtoken": "^9.0.2",
+    "nanoid": "^5.1.5",
+    "nodemon": "^3.1.9",
+    "pg": "^8.14.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.6"
   }
 }
