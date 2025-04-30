@@ -16,29 +16,29 @@ export default (sequelize) => {
             },
             onDelete: 'CASCADE',
         },
-        plotNumber: {
+        plot: {
             type: DataTypes.STRING,
         },
-        area: {
+        area: { // Area can still be decimal
             type: DataTypes.DECIMAL,
         },
         coordinates: {
             type: DataTypes.JSON,
         },
         status: {
-            type: DataTypes.ENUM('available', 'booked', 'sold', 'other'),
+            type: DataTypes.ENUM('available', 'on_hold', 'pending_payment', 'booked', 'sold', 'other'),
             defaultValue: 'available',
         },
-        price: {
-            type: DataTypes.DECIMAL,
+        price: { // Changed to INTEGER
+            type: DataTypes.INTEGER,
         },
         facing: {
             type: DataTypes.STRING,
         },
-        minimumBookingAmount: {
-            type: DataTypes.DECIMAL,
-            allowNull: false, // Or true if it can be zero or set later
-            defaultValue: 500,   // Set a default value if appropriate
+        minimumBookingAmount: { // Changed to INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 500,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,

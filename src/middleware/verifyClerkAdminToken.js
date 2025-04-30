@@ -1,3 +1,4 @@
+//src/middleware/verifyClerkAdminToken.js
 import dotenv from 'dotenv';
 dotenv.config(); // This loads the environment variables from .env
 import jwt from "jsonwebtoken"; // Library to decode JWT
