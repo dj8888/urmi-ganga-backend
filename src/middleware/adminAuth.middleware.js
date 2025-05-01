@@ -1,4 +1,4 @@
-//src/middleware/verifyClerkAdminToken.js
+//src/middleware/adminAuth.middleware.js
 import dotenv from 'dotenv';
 dotenv.config(); // This loads the environment variables from .env
 import jwt from "jsonwebtoken"; // Library to decode JWT
@@ -7,19 +7,21 @@ import { createClerkClient } from '@clerk/backend';
 
 const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY, publishableKey: process.env.CLERK_PUBLISHABLE_KEY });
 
-const verifyClerkAdminToken = async (req, res, next) => {
+const adminAuthMiddleware = async (req, res, next) => {
     try {
         // Construct the full URL for the request
         const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+        console.log(fullUrl);
 
         // Use authenticateRequest to validate the token
         const requestState = await clerkClient.authenticateRequest(
             new Request(fullUrl, { headers: req.headers }), // Pass full URL and headers
             {
-                authorizedParties: ["http://localhost:5173"], // Replace with your frontend domain
+                authorizedParties: [process.env.CLERK_AUTHORIZED_PARTY], // Replace with your frontend domain
             }
         );
 
+        console.log(requestState);
         if (!requestState.isSignedIn) {
             return res.status(401).json({ message: "Unauthorized: Invalid token or user not signed in" });
         }
@@ -58,5 +60,5 @@ const verifyClerkAdminToken = async (req, res, next) => {
     }
 };
 
-export default verifyClerkAdminToken;
+export default adminAuthMiddleware;
 

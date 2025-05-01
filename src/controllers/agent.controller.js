@@ -83,5 +83,22 @@ export const deleteAgent = async (req, res) => {
     }
 };
 
+export const getAgentCodesWithNames = async (req, res) => {
+    try {
+        const agents = await sequelize.models.Agent.findAll({
+            attributes: ["code", "firstName", "lastName"], // Fetch only relevant fields
+        });
+
+        // Format the data to include "code - full name"
+        const formattedAgents = agents.map(agent => {
+            return `${agent.code} - ${agent.firstName} ${agent.lastName}`;
+        });
+
+        return res.status(200).json(formattedAgents); // Send back the formatted list
+    } catch (error) {
+        console.error("Error fetching agent codes and names:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
 
 

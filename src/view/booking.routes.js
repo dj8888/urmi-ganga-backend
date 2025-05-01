@@ -1,18 +1,15 @@
 import express from 'express';
+// Import authentication middleware
+import { authMiddleware } from '../../middleware/auth.middleware.js';
+import { adminAuthMiddleware } from '../../middleware/adminAuth.middleware.js'; // Assuming you have this
+
 import {
-    addBooking,
-    getAllBookings,
-    getBookingById,
-    updateBooking,
-    deleteBooking,
+    initiateBooking,
 } from '../controllers/booking.controller.js';
 
 const router = express.Router();
 
-router.post('/', addBooking);
-router.get('/', getAllBookings);
-router.get('/:bookingId', getBookingById);
-router.put('/:bookingId', updateBooking);
-router.delete('/:bookingId', deleteBooking);
+// Route for initiating a user booking (requires general authentication)
+router.post('/initiate-booking', authMiddleware, initiateBooking);
 
 export default router;
