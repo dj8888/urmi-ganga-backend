@@ -12,7 +12,6 @@ const authMiddleware = async (req, res, next) => {
     try {
         // const fullUrl = `<span class="math-inline">\{req\.protocol\}\://</span>{req.get("host")}${req.originalUrl}`;
         const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
-        console.log(fullUrl);
 
         const requestState = await clerkClient.authenticateRequest(
             new Request(fullUrl, { headers: req.headers }),
@@ -21,7 +20,6 @@ const authMiddleware = async (req, res, next) => {
             }
         );
 
-        console.log(requestState);
         if (!requestState.isSignedIn) {
             return res.status(401).json({ message: "Unauthorized: Invalid token or user not signed in" });
         }

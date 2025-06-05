@@ -26,7 +26,7 @@ export default (sequelize) => {
             type: DataTypes.JSON,
         },
         status: {
-            type: DataTypes.ENUM('available', 'on_hold', 'pending_payment', 'booked', 'sold', 'other'),
+            type: DataTypes.ENUM('available', 'on_hold', 'pending_payment', 'booked', 'sold', 'other', 'park'),
             defaultValue: 'available',
         },
         price: { // Changed to INTEGER

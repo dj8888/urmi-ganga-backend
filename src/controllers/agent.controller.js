@@ -19,8 +19,8 @@ export const addAgent = async (req, res) => {
         if (!firstName || !lastName || !phoneNumber) {
             return res.status(400).json({ "error": "First name, last name and phone number are required." });
         }
-        if (!/^\d+$/.test(phoneNumber)) {
-            return res.status(400).json({ "error": "Phone number must contain only digits." });
+        if (!/^\d{10}$/.test(phoneNumber)) {
+            return res.status(400).json({ "error": "Phone number must contain exactly 10 digits." });
         }
 
         const newAgent = await sequelize.models.Agent.create({
@@ -57,6 +57,13 @@ export const addAgent = async (req, res) => {
 
 export const updateAgent = async (req, res) => {
     const agentId = req.params.agentId;
+    if (!req.body.firstName || !req.body.lastName || !req.body.phoneNumber) {
+        return res.status(400).json({ "error": "First name, last name and phone number are required." });
+    }
+    if (!/^\d{10}$/.test(req.body.phoneNumber)) {
+        return res.status(400).json({ "error": "Phone number must contain exactly 10 digits." });
+    }
+
     try {
         const [updated] = await sequelize.models.Agent.update(req.body, { where: { agent_id: agentId } }); //return an array with number of rows updated.
         if (updated === 0) return res.status(404).json({ message: "Agent not found" });

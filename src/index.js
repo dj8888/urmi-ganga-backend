@@ -2,13 +2,23 @@ import dotenv from 'dotenv';
 dotenv.config(); // This loads the environment variables from .env
 import express from 'express';
 import cors from 'cors';
+import cron from 'node-cron';
+
+
 import { connection } from './config/db.js';
 import agentRoutes from './view/agent.routes.js';
 import projectRoutes from './view/project.routes.js';
 import paymentRoutes from './view/payment.routes.js'; // Import payment routes
 import userRoutes from './view/user.routes.js';
+import bookingRoutes from './view/booking.routes.js';
+import { cleanupPendingBookings } from './controllers/cleanup.controller.js'; // Import cleanup controller function
 
 const app = express();
+
+// ✅ Apply raw body parsing **ONLY for webhook route**
+import bodyParser from 'body-parser';
+app.use('/api/payments/cashfree-webhook', bodyParser.raw({ type: 'application/json' }));
+
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -44,6 +54,7 @@ app.use('/api/agents', agentRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/payments', paymentRoutes); // Mount payment routes
 app.use('/api/users', userRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 //ADMIN - PROTECTED ROUTES
 //app.use('/api/admin', agentRoutes);
@@ -51,9 +62,37 @@ app.use('/api/users', userRoutes);
 // Access the PORT number from process.env
 const PORT = process.env.PORT || 8000; // Use 8000 as a default if PORT is not defined in .env
 
-await connection();
+// await connection();
 
-app.listen(PORT, () => {
-    console.log(`Server is running at Port:${PORT}`)
-});
+// --- Database Connection and Server Start ---
+// This is the ideal place to schedule the cron job
+(async () => {
+    try {
+        await connection(); // This establishes DB connection and loads/syncs models
+        console.log('Database and models ready.');
+
+        // ------ SCHEDULE THE CLEANUP JOB ------
+        // Runs every 15 minutes. Adjust the cron string as needed.
+        // Make sure cleanupPendingBookings function is correctly imported.
+        cron.schedule('*/20 * * * *', () => {
+            console.log('Running scheduled booking cleanup job...');
+            // The cleanupPendingBookings function already uses sequelize and models internally
+            cleanupPendingBookings();
+        });
+        console.log('Scheduled cleanup job to run every 15 minutes.');
+        // --------------------------------------
+
+        app.listen(PORT, () => {
+            console.log(`Server is running at Port:${PORT}`);
+        });
+
+    } catch (error) {
+        console.error('Failed to connect to the database or start server:', error);
+        process.exit(1); // Exit process if DB connection fails
+    }
+})(); // Immediately invoked async function
+
+// app.listen(PORT, () => {
+//     console.log(`Server is running at Port:${PORT}`)
+// });
 

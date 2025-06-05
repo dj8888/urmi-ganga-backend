@@ -21,7 +21,7 @@ const adminAuthMiddleware = async (req, res, next) => {
             }
         );
 
-        console.log(requestState);
+        // console.log(requestState);
         if (!requestState.isSignedIn) {
             return res.status(401).json({ message: "Unauthorized: Invalid token or user not signed in" });
         }
@@ -60,5 +60,7 @@ const adminAuthMiddleware = async (req, res, next) => {
     }
 };
 
-export default adminAuthMiddleware;
+export {
+    adminAuthMiddleware,
+};
 
