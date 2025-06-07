@@ -63,6 +63,16 @@ app.use('/api/bookings', bookingRoutes);
 const PORT = process.env.PORT || 8000; // Use 8000 as a default if PORT is not defined in .env
 
 // await connection();
+// --- Memory logging logic ---
+function logMemoryUsage() {
+    const mu = process.memoryUsage();
+    console.log('--- Memory Usage ---');
+    console.log(`RSS (Resident Set Size): ${(mu.rss / 1024 / 1024).toFixed(2)} MB`); // Total memory consumed by process (what OS sees)
+    console.log(`Heap Total (V8): ${(mu.heapTotal / 1024 / 1024).toFixed(2)} MB`); // Total size of V8 heap
+    console.log(`Heap Used (V8): ${(mu.heapUsed / 1024 / 1024).toFixed(2)} MB`);   // Memory used by JS objects
+    console.log(`External: ${(mu.external / 1024 / 1024).toFixed(2)} MB`);       // Memory for C++ objects bound to JS
+    console.log('--------------------');
+}
 
 // --- Database Connection and Server Start ---
 // This is the ideal place to schedule the cron job
@@ -84,6 +94,9 @@ const PORT = process.env.PORT || 8000; // Use 8000 as a default if PORT is not d
 
         app.listen(PORT, () => {
             console.log(`Server is running at Port:${PORT}`);
+            // Optional: Log memory periodically or on a specific API call
+            console.log('Logging Memory Usage every 10 minutes');
+            setInterval(logMemoryUsage, 600000); // Log every 10 minutes
         });
 
     } catch (error) {

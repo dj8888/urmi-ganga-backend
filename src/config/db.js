@@ -1,22 +1,48 @@
+// src/config/db.js
 import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const sequelize = new Sequelize('testdb', 'testuser', 'testpassword', {
-    host: 'localhost',
-    dialect: 'postgres',
-    logging: false // Disable logging
-});
-//require('dotenv').config();
+// import fs from 'fs'; // Import the file system module
+// import path from 'path'; // Import the path module
+// import { fileURLToPath } from 'url'; // For ES Modules to get __dirname
+// // Helper to get __dirname equivalent in ES Modules
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 //
-//const sequelize = new Sequelize(
-//  process.env.DB_NAME,
-//  process.env.DB_USER,
-//  process.env.DB_PASSWORD,
-//  {
-//    host: process.env.DB_HOST,
-//    port: process.env.DB_PORT || 5432,
-//    dialect: 'postgres',
-//  }
-//);
+// // Define the path for the SQL schema file
+// const SCHEMA_SQL_FILE = path.join(__dirname, 'schema_dump.sql');
+//
+// // Create a write stream for the SQL file
+// const sqlWriteStream = fs.createWriteStream(SCHEMA_SQL_FILE, { flags: 'w' }); // 'w' to overwrite each time
+//
+// // Custom logging function
+// const customSequelizeLogger = (msg) => {
+//     // Sequelize's SQL queries typically start with "Executing (default): "
+//     if (msg.startsWith('Executing (default): ')) {
+//         const sqlQuery = msg.replace('Executing (default): ', '').trim();
+//         // Append a semicolon and newline for better SQL formatting if needed
+//         sqlWriteStream.write(sqlQuery + ';\n');
+//     }
+//     // You can still log other messages to console if you want, but filtered
+//     // console.log(msg); // Uncomment this line if you want to see all Sequelize logs in console too
+// };
+
+const sequelize = new Sequelize(
+    // 'testdb', 'testuser', 'testpassword', {
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        // host: 'localhost',
+        logging: false, // Disable logging
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT || 5432,
+        dialect: 'postgres',
+        // logging: console.log, // <<< Make sure this is `console.log`
+        // logging: customSequelizeLogger, // <<< Use the custom logger here
+
+    });
 
 // Load all models
 const modelDefiners = [
@@ -49,9 +75,11 @@ const connection = async () => {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
         await loadModels(); // Load models asynchronously
-        //await sequelize.sync({ force: true });
-        await sequelize.sync({ alter: true }); //force will remove all previous data if backend is changed.
-        //await sequelize.sync();
+        await sequelize.sync();
+        // await sequelize.sync({ alter: true }); //force will remove all previous data if backend is changed.
+        // IMPORTANT: Temporarily set to { force: true } to generate schema.
+        // This will print the CREATE TABLE statements to your console
+        // await sequelize.sync({ force: true }); // <<< Make sure this is `{ force: true }`
         console.log('All models were synchronized successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
