@@ -28,19 +28,44 @@ dotenv.config();
 //     // console.log(msg); // Uncomment this line if you want to see all Sequelize logs in console too
 // };
 
+// const sequelize = new Sequelize(  //use this for local development instance
+//     // 'testdb', 'testuser', 'testpassword', {
+//     process.env.DB_NAME,
+//     process.env.DB_USER,
+//     process.env.DB_PASSWORD,
+//     {
+//         // host: 'localhost',
+//         logging: false, // Disable logging
+//         host: process.env.DB_HOST,
+//         port: process.env.DB_PORT || 5432,
+//         dialect: 'postgres',
+//         // logging: console.log, // <<< Make sure this is `console.log`
+//         // logging: customSequelizeLogger, // <<< Use the custom logger here
+//
+//     });
 const sequelize = new Sequelize(
     // 'testdb', 'testuser', 'testpassword', {
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
+    process.env.DATABASE_URL,
     {
         // host: 'localhost',
         logging: false, // Disable logging
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT || 5432,
         dialect: 'postgres',
-        // logging: console.log, // <<< Make sure this is `console.log`
-        // logging: customSequelizeLogger, // <<< Use the custom logger here
+        protocol: 'postgres', // Explicitly define protocol for some environments
+        dialectOptions: {
+            ssl: {
+                require: true, // This is crucial for Supabase to enforce SSL
+                rejectUnauthorized: false // Set to false to allow connections to self-signed certs (common with cloud providers, but less secure than true)
+                // If your Supabase connection uses a specific CA cert, you might set this to true and provide the cert.
+                // For most direct Supabase connections, `require: true` and `rejectUnauthorized: false` works.
+            }
+        },
+        // Other options like pool configuration can be added here if needed:
+        // pool: {
+        //     max: 5,
+        //     min: 0,
+        //     acquire: 30000,
+        //     idle: 10000
+        // }
 
     });
 
