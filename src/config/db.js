@@ -57,7 +57,8 @@ const sequelize = new Sequelize(
                 rejectUnauthorized: false // Set to false to allow connections to self-signed certs (common with cloud providers, but less secure than true)
                 // If your Supabase connection uses a specific CA cert, you might set this to true and provide the cert.
                 // For most direct Supabase connections, `require: true` and `rejectUnauthorized: false` works.
-            }
+            },
+            prepare: false // Disable prepared statements
         },
         // Other options like pool configuration can be added here if needed:
         // pool: {
