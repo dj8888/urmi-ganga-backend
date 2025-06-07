@@ -23,7 +23,17 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
-app.use(cors());
+
+const corsOptions = {
+    origin: [
+        'http://localhost:5173', // For your local frontend development
+        process.env.FRONTEND_URL, // <-- REPLACE WITH YOUR ACTUAL NETLIFY URL HERE
+        process.env.CLERK_FRONTEND_API // If Clerk uses your frontend API domain for auth
+    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Ensure all methods your frontend uses are listed
+    credentials: true // Crucial for sending/receiving cookies and authentication headers
+};
+app.use(cors(corsOptions));
 
 // CORS configuration options
 //const corsOptions = {
