@@ -11,6 +11,7 @@ import projectRoutes from './view/project.routes.js';
 import paymentRoutes from './view/payment.routes.js'; // Import payment routes
 import userRoutes from './view/user.routes.js';
 import bookingRoutes from './view/booking.routes.js';
+import statusRoutes from './view/status.routes.js';
 import { cleanupPendingBookings } from './controllers/cleanup.controller.js'; // Import cleanup controller function
 
 const app = express();
@@ -60,11 +61,13 @@ app.use(cors(corsOptions));
 //Form Data: Data submitted via HTML forms or similar.
 //Mixed Content: APIs that might send both JSON and URL-encoded data.
 
+
 app.use('/api/agents', agentRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/payments', paymentRoutes); // Mount payment routes
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/status', statusRoutes);
 
 //ADMIN - PROTECTED ROUTES
 //app.use('/api/admin', agentRoutes);
