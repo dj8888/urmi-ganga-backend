@@ -58,7 +58,9 @@ const getProjectById = async (req, res) => {
                         'status',
                         'price',
                         'minimumBookingAmount',
-                        'project_id' // Include foreign key if needed, though often implicit with include
+                        'project_id', // Include foreign key if needed, though often implicit with include
+                        'area',
+                        'facing',
                     ],
                     // You can add a 'where' clause here if you only want to include certain plots
                 },
