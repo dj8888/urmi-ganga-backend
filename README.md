@@ -1,1 +1,1 @@
-Front-end Repo is [here](ttps://github.com/dj8888/urmi-ganga-frontend)!
+Front-end Repo is [here](https://github.com/dj8888/urmi-ganga-frontend)!
